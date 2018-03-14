@@ -11,6 +11,8 @@ namespace Sitecore.Support.Resources.Media
 {
   public class MediaProvider : Sitecore.Resources.Media.MediaProvider
   {
+    protected readonly Data.ID VersionedNodeID = Data.ID.Parse("{CC68CD9B-28E4-4143-BA18-88863A6B917B}");
+
     /// <summary>
     /// Gets a media URL.
     /// </summary>
@@ -58,20 +60,26 @@ namespace Sitecore.Support.Resources.Media
 
       extension = StringUtil.EnsurePrefix('.', extension);
 
-      string parameters = options.ToString();
+      #region patch changes
 
-      if (parameters.Length > 0)
+      var innerItem = item.InnerItem;
+      if (innerItem != null && innerItem.Template.InnerItem.ParentID == VersionedNodeID)
       {
-        extension += "?" + parameters;
+        string parameters = options.ToString();
+
+        if (parameters.Length > 0)
+        {
+          extension += "?" + parameters;
+        }
       }
+
+      #endregion
 
       string mediaRoot = Constants.MediaLibraryPath + "/";
       string itemPath = item.InnerItem.Paths.Path;
 
       string path;
 
-      // Check whether an item is under media library, 
-      // otherwise it would be hard to define whether it's relative path to an item or absolute
       if (options.UseItemPath
         && itemPath.StartsWith(mediaRoot, StringComparison.OrdinalIgnoreCase))
       {
