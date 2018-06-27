@@ -63,7 +63,7 @@ namespace Sitecore.Support.Resources.Media
       #region patch changes
 
       var innerItem = item.InnerItem;
-      if (innerItem != null && innerItem.Template.InnerItem.ParentID == VersionedNodeID)
+      if (((innerItem != null) && (innerItem.Template.InnerItem.ParentID == this.VersionedNodeID)) || (options.Thumbnail == true))
       {
         string parameters = options.ToString();
 
